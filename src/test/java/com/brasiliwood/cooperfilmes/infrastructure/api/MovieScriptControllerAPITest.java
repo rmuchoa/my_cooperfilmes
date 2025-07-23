@@ -5,6 +5,7 @@ import com.brasiliwood.cooperfilmes.domain.movie.script.MovieScript;
 import com.brasiliwood.cooperfilmes.domain.movie.script.MovieScriptService;
 import com.brasiliwood.cooperfilmes.infrastructure.api.dto.ClientContactDTO;
 import com.brasiliwood.cooperfilmes.infrastructure.api.dto.MovieScriptRequest;
+import com.brasiliwood.cooperfilmes.infrastructure.api.dto.MovieScriptResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -17,8 +18,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class MovieScriptControllerAPITest {
@@ -34,8 +34,9 @@ public class MovieScriptControllerAPITest {
 
     @Test
     public void shouldAskServiceToSubmitMovieScriptWhenSubmittingScript() {
-        MovieScriptRequest request = MovieScriptRequest.builder().text("some text")
-                .contact(ClientContactDTO.builder().build()).build();
+        MovieScriptRequest request = MovieScriptRequest.builder().contact(ClientContactDTO.builder().build()).build();
+        MovieScript script = MovieScript.builder().status(MovieScript.MovieScriptStatus.EM_ANALISE).contact(ClientContact.builder().build()).build();
+        when(service.submitScript(any())).thenReturn(script);
 
         controller.submitScript(request);
 
@@ -46,6 +47,9 @@ public class MovieScriptControllerAPITest {
     public void shouldBuildMovieScriptEntityBasedOnGivenScriptToSaveItWhenSubmittingScript() {
         ClientContactDTO contact = ClientContactDTO.builder().name("name").phone("phone").email("email").build();
         MovieScriptRequest request = MovieScriptRequest.builder().text("some text").contact(contact).build();
+        MovieScript script = MovieScript.builder().id(1).text(request.getText()).status(MovieScript.MovieScriptStatus.EM_ANALISE)
+                .contact(ClientContact.builder().name(contact.getName()).phone(contact.getPhone()).email(contact.getEmail()).build()).build();
+        when(service.submitScript(any())).thenReturn(script);
 
         controller.submitScript(request);
 
@@ -54,8 +58,68 @@ public class MovieScriptControllerAPITest {
         assertThat(scriptCaptor.getValue(), allOf(
                 instanceOf(MovieScript.class),
                 hasProperty("text", equalTo(request.getText())),
+                hasProperty("status", equalTo(MovieScript.MovieScriptStatus.AGUARDANDO_ANALISE)),
                 hasProperty("contact", allOf(
                         instanceOf(ClientContact.class),
+                        hasProperty("name", equalTo(contact.getName())),
+                        hasProperty("phone", equalTo(contact.getPhone())),
+                        hasProperty("email", equalTo(contact.getEmail()))
+                ))
+        ));
+    }
+
+    @Test
+    public void shouldReturnMovieScriptResponseBasedOnSavedMovieScriptWhenSubmittingScript() {
+        ClientContactDTO contact = ClientContactDTO.builder().name("name").phone("phone").email("email").build();
+        MovieScriptRequest request = MovieScriptRequest.builder().text("some text").contact(contact).build();
+        MovieScript script = MovieScript.builder().id(1).text(request.getText()).status(MovieScript.MovieScriptStatus.EM_ANALISE)
+                .contact(ClientContact.builder().name(contact.getName()).phone(contact.getPhone()).email(contact.getEmail()).build()).build();
+        when(service.submitScript(any())).thenReturn(script);
+
+        MovieScriptResponse result = controller.submitScript(request);
+
+        assertThat(result, allOf(
+                instanceOf(MovieScriptResponse.class),
+                hasProperty("text", equalTo(request.getText())),
+                hasProperty("status", equalTo(script.getStatus().name())),
+                hasProperty("contact", allOf(
+                        instanceOf(ClientContactDTO.class),
+                        hasProperty("name", equalTo(contact.getName())),
+                        hasProperty("phone", equalTo(contact.getPhone())),
+                        hasProperty("email", equalTo(contact.getEmail()))
+                ))
+        ));
+    }
+
+    @Test
+    public void shouldAskServiceToFindScriptByIdWhenFindingScript() {
+        Integer scriptId = 1;
+        MovieScript script = MovieScript.builder().id(scriptId).status(MovieScript.MovieScriptStatus.EM_ANALISE)
+                .contact(ClientContact.builder().build()).build();
+        when(service.findScriptById(eq(scriptId))).thenReturn(script);
+
+        controller.checkScriptSubmission(scriptId);
+
+        verify(service, atLeastOnce()).findScriptById(eq(scriptId));
+    }
+
+    @Test
+    public void shouldReturnMovieScriptResponseBasedOnFoundMovieScriptWhenFindingScript() {
+        Integer scriptId = 1;
+        ClientContact contact = ClientContact.builder().name("name").phone("phone").email("email").build();
+        MovieScript script = MovieScript.builder().id(scriptId).text("some text")
+                .status(MovieScript.MovieScriptStatus.EM_ANALISE)
+                .contact(contact).build();
+        when(service.findScriptById(eq(scriptId))).thenReturn(script);
+
+        MovieScriptResponse result = controller.checkScriptSubmission(scriptId);
+
+        assertThat(result, allOf(
+                instanceOf(MovieScriptResponse.class),
+                hasProperty("text", equalTo(script.getText())),
+                hasProperty("status", equalTo(script.getStatus().name())),
+                hasProperty("contact", allOf(
+                        instanceOf(ClientContactDTO.class),
                         hasProperty("name", equalTo(contact.getName())),
                         hasProperty("phone", equalTo(contact.getPhone())),
                         hasProperty("email", equalTo(contact.getEmail()))

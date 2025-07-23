@@ -10,6 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,7 +31,7 @@ public class MovieScriptServiceTest {
 
     @Test
     public void shouldAskRepositoryToSaveMovieScriptWhenSubmittingScript() {
-        MovieScript script = MovieScript.builder().text("some text").contact(ClientContact.builder().build()).build();
+        MovieScript script = MovieScript.builder().text("some text").status(MovieScript.MovieScriptStatus.EM_ANALISE).contact(ClientContact.builder().build()).build();
         MovieScriptEntity entity = MovieScriptEntity.of(script);
         when(repository.save(any())).thenReturn(entity);
 
@@ -40,8 +42,14 @@ public class MovieScriptServiceTest {
 
     @Test
     public void shouldBuildMovieScriptEntityBasedOnGivenScriptToSaveItWhenSubmittingScript() {
-        ClientContact contact = ClientContact.builder().name("name").phone("phone").email("email").build();
-        MovieScript script = MovieScript.builder().text("some text").contact(contact).build();
+        ClientContact contact = ClientContact.builder()
+                .name("name")
+                .phone("phone")
+                .email("email").build();
+        MovieScript script = MovieScript.builder()
+                .text("some text")
+                .status(MovieScript.MovieScriptStatus.EM_ANALISE)
+                .contact(contact).build();
         MovieScriptEntity entity = MovieScriptEntity.of(script);
         when(repository.save(any())).thenReturn(entity);
 
@@ -53,9 +61,71 @@ public class MovieScriptServiceTest {
                 instanceOf(MovieScriptEntity.class),
                 hasProperty("id", equalTo(script.getId())),
                 hasProperty("text", equalTo(script.getText())),
+                hasProperty("status", equalTo(entity.getStatus())),
                 hasProperty("clientName", equalTo(contact.getName())),
                 hasProperty("clientPhone", equalTo(contact.getPhone())),
                 hasProperty("clientEmail", equalTo(contact.getEmail()))
+        ));
+    }
+
+    @Test
+    public void shouldReturnMovieScriptBasedOnRetrievedEntityWithIdWhenSavedMovieScriptEntity() {
+        ClientContact contact = ClientContact.builder().name("name").phone("phone").email("email").build();
+        MovieScript script = MovieScript.builder().id(1).text("some text").status(MovieScript.MovieScriptStatus.EM_ANALISE).contact(contact).build();
+        MovieScriptEntity entity = MovieScriptEntity.of(script);
+        when(repository.save(any())).thenReturn(entity);
+
+        MovieScript result = service.submitScript(script);
+
+        assertThat(result, allOf(
+                instanceOf(MovieScript.class),
+                hasProperty("id", equalTo(entity.getId())),
+                hasProperty("text", equalTo(entity.getText())),
+                hasProperty("status", equalTo(entity.getStatus().getDomain())),
+                hasProperty("contact", allOf(
+                        instanceOf(ClientContact.class),
+                        hasProperty("name", equalTo(contact.getName())),
+                        hasProperty("phone", equalTo(contact.getPhone())),
+                        hasProperty("email", equalTo(contact.getEmail()))
+                ))
+        ));
+    }
+
+    @Test
+    public void shouldAskRepositoryToFindMovieScriptByIdWhenFindingScript() {
+        Integer scriptId = 1;
+        MovieScriptEntity entity = new MovieScriptEntity(
+                scriptId, "text","name", "phone", "email",
+                MovieScriptEntity.MovieScriptStatus.AGUARDANDO_ANALISE);
+        when(repository.findById(eq(scriptId))).thenReturn(Optional.of(entity));
+
+        service.findScriptById(scriptId);
+
+        verify(repository, atLeastOnce()).findById(scriptId);
+    }
+
+    @Test
+    public void shouldReturnMovieScriptBasedOnRetrievedEntityWithIdWhenFindingScript() {
+        Integer scriptId = 1;
+        MovieScriptEntity entity = new MovieScriptEntity(
+                scriptId, "text",
+                "name", "phone", "email",
+                MovieScriptEntity.MovieScriptStatus.AGUARDANDO_ANALISE);
+        when(repository.findById(eq(scriptId))).thenReturn(Optional.of(entity));
+
+        MovieScript result = service.findScriptById(scriptId);
+
+        assertThat(result, allOf(
+                instanceOf(MovieScript.class),
+                hasProperty("id", equalTo(entity.getId())),
+                hasProperty("text", equalTo(entity.getText())),
+                hasProperty("status", equalTo(entity.getStatus().getDomain())),
+                hasProperty("contact", allOf(
+                        instanceOf(ClientContact.class),
+                        hasProperty("name", equalTo(entity.getClientName())),
+                        hasProperty("phone", equalTo(entity.getClientPhone())),
+                        hasProperty("email", equalTo(entity.getClientEmail()))
+                ))
         ));
     }
 

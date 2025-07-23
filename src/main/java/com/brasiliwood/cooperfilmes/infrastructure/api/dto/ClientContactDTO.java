@@ -20,4 +20,12 @@ public class ClientContactDTO {
         return ClientContact.of(name, phone, email);
     }
 
+    public static ClientContactDTO of(ClientContact contact) {
+        return ClientContactDTO.builder()
+                .name(contact.getName())
+                .phone(contact.getPhone())
+                .email(contact.getEmail())
+                .build();
+    }
+
 }

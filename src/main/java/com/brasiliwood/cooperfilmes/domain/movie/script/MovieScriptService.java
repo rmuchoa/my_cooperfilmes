@@ -18,4 +18,9 @@ public class MovieScriptService {
         return entity.toDomain();
     }
 
+    public MovieScript findScriptById(Integer scriptId) {
+        return repository.findById(scriptId)
+                .map(MovieScriptEntity::toDomain)
+                .orElseThrow(MovieScriptNotFoundException::new);
+    }
 }

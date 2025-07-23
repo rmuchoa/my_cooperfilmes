@@ -42,7 +42,7 @@ public class MovieScriptEntity {
                 movieScript.getContact().getName(),
                 movieScript.getContact().getPhone(),
                 movieScript.getContact().getEmail(),
-                MovieScriptStatus.AGUARDANDO_ANALISE);
+                MovieScriptStatus.of(movieScript.getStatus()));
     }
 
     public MovieScript toDomain() {
@@ -59,7 +59,7 @@ public class MovieScriptEntity {
 
     @Getter
     @AllArgsConstructor
-    enum MovieScriptStatus {
+    public enum MovieScriptStatus {
         AGUARDANDO_ANALISE(MovieScript.MovieScriptStatus.AGUARDANDO_ANALISE),
         EM_ANALISE(MovieScript.MovieScriptStatus.EM_ANALISE),
         AGUARDANDO_REVISAO(MovieScript.MovieScriptStatus.AGUARDANDO_REVISAO),
@@ -70,6 +70,13 @@ public class MovieScriptEntity {
         RECUSADO(MovieScript.MovieScriptStatus.RECUSADO);
 
         private final MovieScript.MovieScriptStatus domain;
+
+        private static MovieScriptStatus of(MovieScript.MovieScriptStatus domain) {
+            for (MovieScriptStatus value : values())
+                if (value.domain == domain)
+                    return value;
+            return null;
+        }
 
     }
 
