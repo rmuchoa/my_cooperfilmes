@@ -2,10 +2,12 @@ package com.brasiliwood.cooperfilmes.infrastructure.repository;
 
 import static jakarta.persistence.EnumType.STRING;
 
+import com.brasiliwood.cooperfilmes.domain.movie.script.ClientContact;
 import com.brasiliwood.cooperfilmes.domain.movie.script.MovieScript;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity(name = "movie_script")
@@ -18,7 +20,6 @@ public class MovieScriptEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-//    @Lob
     @Column(columnDefinition = "TEXT")
     private String text;
 
@@ -44,15 +45,32 @@ public class MovieScriptEntity {
                 MovieScriptStatus.AGUARDANDO_ANALISE);
     }
 
+    public MovieScript toDomain() {
+        return MovieScript.of(
+                id,
+                text,
+                status.getDomain(),
+                ClientContact.of(
+                        clientName,
+                        clientPhone,
+                        clientEmail
+                ));
+    }
+
+    @Getter
+    @AllArgsConstructor
     enum MovieScriptStatus {
-        AGUARDANDO_ANALISE,
-        EM_ANALISE,
-        AGUARDANDO_REVISAO,
-        EM_REVISAO,
-        AGUARDANDO_APROVACAO,
-        EM_APROVACAO,
-        APROVADO,
-        RECUSADO
+        AGUARDANDO_ANALISE(MovieScript.MovieScriptStatus.AGUARDANDO_ANALISE),
+        EM_ANALISE(MovieScript.MovieScriptStatus.EM_ANALISE),
+        AGUARDANDO_REVISAO(MovieScript.MovieScriptStatus.AGUARDANDO_REVISAO),
+        EM_REVISAO(MovieScript.MovieScriptStatus.EM_REVISAO),
+        AGUARDANDO_APROVACAO(MovieScript.MovieScriptStatus.AGUARDANDO_APROVACAO),
+        EM_APROVACAO(MovieScript.MovieScriptStatus.EM_APROVACAO),
+        APROVADO(MovieScript.MovieScriptStatus.APROVADO),
+        RECUSADO(MovieScript.MovieScriptStatus.RECUSADO);
+
+        private final MovieScript.MovieScriptStatus domain;
+
     }
 
 }

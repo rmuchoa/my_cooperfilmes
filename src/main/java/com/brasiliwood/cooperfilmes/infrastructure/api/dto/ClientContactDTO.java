@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 public class ClientContactDTO {
 
     private String name;
-    private String email;
     private String phone;
+    private String email;
 
     public ClientContact toDomain() {
-        return ClientContact.of(name, email, phone);
+        return ClientContact.of(name, phone, email);
     }
 
 }

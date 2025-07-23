@@ -13,8 +13,9 @@ public class MovieScriptService {
         this.repository = repository;
     }
 
-    public void submitScript(MovieScript movieScript) {
-        repository.save(MovieScriptEntity.of(movieScript));
+    public MovieScript submitScript(MovieScript movieScript) {
+        MovieScriptEntity entity = repository.save(MovieScriptEntity.of(movieScript));
+        return entity.toDomain();
     }
 
 }

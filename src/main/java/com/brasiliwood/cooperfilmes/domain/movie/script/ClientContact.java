@@ -10,11 +10,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClientContact {
-    private String name;
-    private String email;
-    private String phone;
 
-    public static ClientContact of(String name, String email, String phone) {
-        return new ClientContact(name, email, phone);
+    private String name;
+    private String phone;
+    private String email;
+
+    public static ClientContact of(String name, String phone, String email) {
+        return new ClientContact(name, phone, email);
     }
+
 }
