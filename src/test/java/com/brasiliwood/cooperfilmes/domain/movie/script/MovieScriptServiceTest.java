@@ -13,8 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class MovieScriptServiceTest {
@@ -31,6 +30,8 @@ public class MovieScriptServiceTest {
     @Test
     public void shouldAskRepositoryToSaveMovieScriptWhenSubmittingScript() {
         MovieScript script = MovieScript.builder().text("some text").contact(ClientContact.builder().build()).build();
+        MovieScriptEntity entity = MovieScriptEntity.of(script);
+        when(repository.save(any())).thenReturn(entity);
 
         service.submitScript(script);
 
@@ -41,6 +42,8 @@ public class MovieScriptServiceTest {
     public void shouldBuildMovieScriptEntityBasedOnGivenScriptToSaveItWhenSubmittingScript() {
         ClientContact contact = ClientContact.builder().name("name").phone("phone").email("email").build();
         MovieScript script = MovieScript.builder().text("some text").contact(contact).build();
+        MovieScriptEntity entity = MovieScriptEntity.of(script);
+        when(repository.save(any())).thenReturn(entity);
 
         service.submitScript(script);
 
