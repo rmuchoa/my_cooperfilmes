@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClientContactDTO {
+
     private String name;
     private String email;
     private String phone;
@@ -18,4 +19,5 @@ public class ClientContactDTO {
     public ClientContact toDomain() {
         return ClientContact.of(name, email, phone);
     }
+
 }

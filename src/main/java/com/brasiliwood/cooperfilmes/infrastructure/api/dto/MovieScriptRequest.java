@@ -11,10 +11,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MovieScriptRequest {
+
     private String text;
     private ClientContactDTO contact;
 
     public MovieScript toDomain() {
         return MovieScript.of(text, contact.toDomain());
     }
+
 }
