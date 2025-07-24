@@ -13,9 +13,10 @@ public class UserService {
         this.repository = repository;
     }
 
-    public User createUser(User user) {
-        UserEntity entity = repository.save(UserEntity.of(user));
-        return entity.toDomain();
+    public User loginUser(Login login) {
+        return repository.findByEmail(login.getEmail())
+                .map(UserEntity::toDomain)
+                .orElseThrow(UserNotFoundException::new);
     }
 
 }

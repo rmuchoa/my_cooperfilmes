@@ -14,3 +14,10 @@ CREATE TABLE approval_user (
     password VARCHAR(50),
     user_position VARCHAR(50)
 )
+
+INSERT INTO approval_user(name, email, password, user_position) VALUES
+('Bob', 'bob@email.com', '12345', 'ANALYST'),
+('Marry', 'marry@email.com', '12345', 'REVIEWER'),
+('Peter', 'peter@email.com', '12345', 'APPROVER'),
+('Hyana', 'hyana@email.com', '12345', 'APPROVER'),
+('Ted', 'ted@email.com', '12345', 'APPROVER');

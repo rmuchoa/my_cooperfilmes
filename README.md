@@ -20,3 +20,12 @@ The following guides illustrate how to use some features concretely:
 These additional references should also help you:
 
 * [Gradle Build Scans – insights for your project's build](https://scans.gradle.com#gradle)
+
+### User login
+These are the login credentiasl for approval users
+
+user: 'bob@email.com', pass: '12345'
+user: 'marry@email.com', pass: '12345'
+user: 'peter@email.com', pass: '12345'
+user: 'hyana@email.com', pass: '12345'
+user: 'ted@email.com', pass: '12345'

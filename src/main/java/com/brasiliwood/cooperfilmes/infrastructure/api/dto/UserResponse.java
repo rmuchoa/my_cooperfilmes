@@ -7,15 +7,19 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserCreateRequest {
+public class UserResponse {
 
+    private Integer id;
     private String name;
     private String email;
-    private String password;
     private UserPosition position;
 
-    public User toDomain() {
-        return User.of(name, email, password, position.domain);
+    public static UserResponse of(User user) {
+        return new UserResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                UserPosition.of(user.getPosition()));
     }
 
     @Getter
