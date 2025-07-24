@@ -29,6 +29,12 @@ public class MovieScriptEntity {
     @Column(columnDefinition = "TEXT", name = "analysis_justification")
     private String analysisJustification;
 
+    @Column(columnDefinition = "TEXT", name = "review_mistakes")
+    private String reviewMistakes;
+
+    @Column(columnDefinition = "TEXT", name = "review_suggestions")
+    private String reviewSuggestions;
+
     @Column(name = "client_name")
     private String clientName;
 
@@ -48,6 +54,8 @@ public class MovieScriptEntity {
                 movieScript.getId(),
                 movieScript.getText(),
                 movieScript.getAnalysisJustification(),
+                movieScript.getReviewPointedMistakes(),
+                movieScript.getReviewSuggestions(),
                 movieScript.getContact().getName(),
                 movieScript.getContact().getPhone(),
                 movieScript.getContact().getEmail(),
@@ -60,6 +68,8 @@ public class MovieScriptEntity {
                 id,
                 text,
                 analysisJustification,
+                reviewMistakes,
+                reviewSuggestions,
                 status.getDomain(),
                 userSupplier.get(),
                 ClientContact.of(

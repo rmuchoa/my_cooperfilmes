@@ -14,12 +14,12 @@ public class ScriptAnalysis {
 
     private Integer scriptId;
     private MovieScriptAnalyzeRequest.AnalysisStatus status;
-    private String analysisJustification;
+    private String justification;
 
     public static ScriptAnalysis of(
             Integer scriptId,
             MovieScriptAnalyzeRequest.AnalysisStatus status,
-            String analysisJustification) {
-        return new ScriptAnalysis(scriptId, status, analysisJustification);
+            String justification) {
+        return new ScriptAnalysis(scriptId, status, justification);
     }
 }

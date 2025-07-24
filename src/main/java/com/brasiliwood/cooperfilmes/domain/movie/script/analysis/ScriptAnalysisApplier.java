@@ -5,7 +5,7 @@ import com.brasiliwood.cooperfilmes.domain.movie.script.assign.ForbiddenAssignEx
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class AnalysisApplier {
+public class ScriptAnalysisApplier {
 
     private ScriptAnalysis analysis;
 

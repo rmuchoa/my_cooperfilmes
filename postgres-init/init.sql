@@ -10,6 +10,8 @@ CREATE TABLE movie_script (
     id SERIAL PRIMARY KEY,
     text TEXT NOT NULL,
     analysis_justification TEXT NULL,
+    review_mistakes TEXT NULL,
+    review_suggestions TEXT NULL,
     status VARCHAR(50) NOT NULL,
     client_name VARCHAR(100) NOT NULL,
     client_phone VARCHAR(25) NOT NULL,

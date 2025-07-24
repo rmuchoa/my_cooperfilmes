@@ -13,8 +13,8 @@ public class ScriptAnalysisService {
 
     public MovieScript recordAnalysis(ScriptAnalysis analysis) {
         MovieScript script = movieScriptService.findScriptById(analysis.getScriptId());
-        MovieScript analysisApplied = new AnalysisApplier(analysis).applyOn(script);
-        return movieScriptService.saveScript(analysisApplied);
+        MovieScript analysed = new ScriptAnalysisApplier(analysis).applyOn(script);
+        return movieScriptService.saveScript(analysed);
     }
 
 }

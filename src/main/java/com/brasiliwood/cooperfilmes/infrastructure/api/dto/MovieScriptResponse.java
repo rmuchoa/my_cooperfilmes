@@ -15,6 +15,8 @@ public class MovieScriptResponse {
     private Integer id;
     private String text;
     private String analysisJustification;
+    private String reviewPointedMistakes;
+    private String reviewSuggestions;
     private String status;
     private UserResponse user;
     private ClientContactDTO contact;
@@ -24,6 +26,8 @@ public class MovieScriptResponse {
                 .id(script.getId())
                 .text(script.getText())
                 .analysisJustification(script.getAnalysisJustification())
+                .reviewPointedMistakes(script.getReviewPointedMistakes())
+                .reviewSuggestions(script.getReviewSuggestions())
                 .status(script.getStatus().name())
                 .user(UserResponse.of(script.getUser()))
                 .contact(ClientContactDTO.of(script.getContact()))

@@ -1,6 +1,7 @@
 package com.brasiliwood.cooperfilmes.domain.movie.script;
 
 import com.brasiliwood.cooperfilmes.domain.movie.script.analysis.ScriptAnalysis;
+import com.brasiliwood.cooperfilmes.domain.movie.script.review.ScriptReview;
 import com.brasiliwood.cooperfilmes.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Optional;
+
+import static com.brasiliwood.cooperfilmes.domain.movie.script.MovieScript.MovieScriptStatus.*;
 
 @Data
 @Builder
@@ -18,6 +21,8 @@ public class MovieScript {
     private Integer id;
     private String text;
     private String analysisJustification;
+    private String reviewPointedMistakes;
+    private String reviewSuggestions;
     private MovieScriptStatus status;
     private User user;
     private ClientContact contact;
@@ -44,50 +49,70 @@ public class MovieScript {
         return !isInAnalysis();
     }
 
+    public boolean isNotInReview() {
+        return !isInReview();
+    }
+
     public boolean isWaitingForAnalysis() {
-        return status == MovieScriptStatus.WAITING_FOR_ANALYSIS;
+        return status == WAITING_FOR_ANALYSIS;
     }
 
     public boolean isWaitingForReview() {
-        return status == MovieScriptStatus.WAITING_FOR_REVIEW;
+        return status == WAITING_FOR_REVIEW;
     }
 
     public boolean isWaitingForApproval() {
-        return status == MovieScriptStatus.WAITING_FOR_APPROVAL;
+        return status == WAITING_FOR_APPROVAL;
     }
 
     public boolean isInAnalysis() {
-        return status == MovieScriptStatus.IN_ANALYSIS;
+        return status == IN_ANALYSIS;
+    }
+
+    public boolean isInReview() {
+        return status == IN_REVIEW;
     }
 
     public MovieScript assignAnalyst(User analyst) {
-        return assignUser(MovieScriptStatus.IN_ANALYSIS, analyst);
+        return assignUser(IN_ANALYSIS, analyst);
     }
 
     public MovieScript assignReviewer(User reviewer) {
-        return assignUser(MovieScriptStatus.IN_REVIEW, reviewer);
+        return assignUser(IN_REVIEW, reviewer);
     }
 
     public MovieScript assignApprover(User approver) {
-        return assignUser(MovieScriptStatus.IN_APPROVAL, approver);
+        return assignUser(IN_APPROVAL, approver);
     }
 
     public MovieScript assignUser(MovieScriptStatus status, User user) {
-        return MovieScript.of(id, text, status, user, contact);
+        return MovieScript.of(id, text, analysisJustification, reviewPointedMistakes, reviewSuggestions, status, user, contact);
     }
 
     public MovieScript applyAnalysis(ScriptAnalysis analysis) {
         return MovieScript.of(
                 id,
                 text,
-                analysis.getAnalysisJustification(),
+                analysis.getJustification(),
                 analysis.getStatus().getDomain(),
                 user,
                 contact);
     }
 
+    public MovieScript applyReview(ScriptReview review) {
+        return MovieScript.of(
+                id,
+                text,
+                analysisJustification,
+                review.getMistakes(),
+                review.getSuggestions(),
+                WAITING_FOR_APPROVAL,
+                user,
+                contact);
+    }
+
     public static MovieScript of(String text, ClientContact domain) {
-        return of(null, text, MovieScriptStatus.WAITING_FOR_ANALYSIS, domain);
+        return of(null, text, WAITING_FOR_ANALYSIS, domain);
     }
 
     public static MovieScript of(
@@ -114,7 +139,19 @@ public class MovieScript {
             MovieScriptStatus status,
             User user,
             ClientContact contact) {
-        return new MovieScript(id, text, analysisJustification, status, user, contact);
+        return of(id, text, analysisJustification, null, null, status, user, contact);
+    }
+
+    public static MovieScript of(
+            Integer id,
+            String text,
+            String analysisJustification,
+            String reviewPointedMistakes,
+            String reviewSuggestions,
+            MovieScriptStatus status,
+            User user,
+            ClientContact contact) {
+        return new MovieScript(id, text, analysisJustification, reviewPointedMistakes, reviewSuggestions, status, user, contact);
     }
 
     public enum MovieScriptStatus {

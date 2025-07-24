@@ -10,11 +10,11 @@ import lombok.*;
 @AllArgsConstructor
 public class MovieScriptAnalyzeRequest {
 
-    private String analysisJustification;
+    private String justification;
     private AnalysisStatus status;
 
     public ScriptAnalysis toDomain(Integer scriptId) {
-        return ScriptAnalysis.of(scriptId, status, analysisJustification);
+        return ScriptAnalysis.of(scriptId, status, justification);
     }
 
     @Getter
