@@ -26,6 +26,9 @@ public class MovieScriptEntity {
     @Column(columnDefinition = "TEXT")
     private String text;
 
+    @Column(columnDefinition = "TEXT", name = "analysis_justification")
+    private String analysisJustification;
+
     @Column(name = "client_name")
     private String clientName;
 
@@ -44,6 +47,7 @@ public class MovieScriptEntity {
         return new MovieScriptEntity(
                 movieScript.getId(),
                 movieScript.getText(),
+                movieScript.getAnalysisJustification(),
                 movieScript.getContact().getName(),
                 movieScript.getContact().getPhone(),
                 movieScript.getContact().getEmail(),
@@ -55,6 +59,7 @@ public class MovieScriptEntity {
         return MovieScript.of(
                 id,
                 text,
+                analysisJustification,
                 status.getDomain(),
                 userSupplier.get(),
                 ClientContact.of(

@@ -1,18 +1,19 @@
 CREATE TABLE approval_user (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(100),
-    email VARCHAR(100) UNIQUE,
-    password VARCHAR(50),
-    user_position VARCHAR(50)
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(50) NOT NULL,
+    user_position VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE movie_script (
     id SERIAL PRIMARY KEY,
-    text TEXT,
-    status VARCHAR(50),
-    client_name VARCHAR(100),
-    client_phone VARCHAR(25),
-    client_email VARCHAR(100) UNIQUE,
+    text TEXT NOT NULL,
+    analysis_justification TEXT NULL,
+    status VARCHAR(50) NOT NULL,
+    client_name VARCHAR(100) NOT NULL,
+    client_phone VARCHAR(25) NOT NULL,
+    client_email VARCHAR(100) NOT NULL,
     user_id INTEGER NULL,
     CONSTRAINT fk_movie_script_approval_user
         FOREIGN KEY (user_id)

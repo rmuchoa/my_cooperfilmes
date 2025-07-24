@@ -1,5 +1,6 @@
 package com.brasiliwood.cooperfilmes.domain.movie.script;
 
+import com.brasiliwood.cooperfilmes.domain.movie.script.analysis.ScriptAnalysis;
 import com.brasiliwood.cooperfilmes.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +17,7 @@ public class MovieScript {
 
     private Integer id;
     private String text;
+    private String analysisJustification;
     private MovieScriptStatus status;
     private User user;
     private ClientContact contact;
@@ -38,6 +40,10 @@ public class MovieScript {
         return !isWaitingForApproval();
     }
 
+    public boolean isNotInAnalysis() {
+        return !isInAnalysis();
+    }
+
     public boolean isWaitingForAnalysis() {
         return status == MovieScriptStatus.WAITING_FOR_ANALYSIS;
     }
@@ -48,6 +54,10 @@ public class MovieScript {
 
     public boolean isWaitingForApproval() {
         return status == MovieScriptStatus.WAITING_FOR_APPROVAL;
+    }
+
+    public boolean isInAnalysis() {
+        return status == MovieScriptStatus.IN_ANALYSIS;
     }
 
     public MovieScript assignAnalyst(User analyst) {
@@ -66,6 +76,16 @@ public class MovieScript {
         return MovieScript.of(id, text, status, user, contact);
     }
 
+    public MovieScript applyAnalysis(ScriptAnalysis analysis) {
+        return MovieScript.of(
+                id,
+                text,
+                analysis.getAnalysisJustification(),
+                analysis.getStatus().getDomain(),
+                user,
+                contact);
+    }
+
     public static MovieScript of(String text, ClientContact domain) {
         return of(null, text, MovieScriptStatus.WAITING_FOR_ANALYSIS, domain);
     }
@@ -75,7 +95,7 @@ public class MovieScript {
             String text,
             MovieScriptStatus status,
             ClientContact contact) {
-        return new MovieScript(id, text, status, null, contact);
+        return of(id, text, status, null, contact);
     }
 
     public static MovieScript of(
@@ -84,7 +104,17 @@ public class MovieScript {
             MovieScriptStatus status,
             User user,
             ClientContact contact) {
-        return new MovieScript(id, text, status, user, contact);
+        return of(id, text, null, status, user, contact);
+    }
+
+    public static MovieScript of(
+            Integer id,
+            String text,
+            String analysisJustification,
+            MovieScriptStatus status,
+            User user,
+            ClientContact contact) {
+        return new MovieScript(id, text, analysisJustification, status, user, contact);
     }
 
     public enum MovieScriptStatus {

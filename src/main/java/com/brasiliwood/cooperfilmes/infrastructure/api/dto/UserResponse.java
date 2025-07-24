@@ -3,6 +3,8 @@ package com.brasiliwood.cooperfilmes.infrastructure.api.dto;
 import com.brasiliwood.cooperfilmes.domain.user.User;
 import lombok.*;
 
+import static java.util.Objects.isNull;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -15,6 +17,8 @@ public class UserResponse {
     private UserPosition position;
 
     public static UserResponse of(User user) {
+        if (isNull(user)) return null;
+
         return new UserResponse(
                 user.getId(),
                 user.getName(),

@@ -101,7 +101,7 @@ public class MovieScriptServiceTest {
     public void shouldAskRepositoryToFindMovieScriptByIdWhenFindingScript() {
         Integer scriptId = 1;
         MovieScriptEntity entity = new MovieScriptEntity(
-                scriptId, "text","name", "phone", "email",
+                scriptId, "text", null,"name", "phone", "email",
                 MovieScriptEntity.MovieScriptStatus.AGUARDANDO_ANALISE, null);
         when(repository.findById(eq(scriptId))).thenReturn(Optional.of(entity));
 
@@ -116,7 +116,7 @@ public class MovieScriptServiceTest {
         Integer userId = 2;
         UserEntity user = new UserEntity(userId, "Me", "email@email.com", "pass", UserEntity.UserPosition.ANALYST);
         MovieScriptEntity entity = new MovieScriptEntity(
-                scriptId, "text",
+                scriptId, "text", "justification",
                 "name", "phone", "email",
                 MovieScriptEntity.MovieScriptStatus.AGUARDANDO_ANALISE, userId);
         when(repository.findById(eq(scriptId))).thenReturn(Optional.of(entity));
@@ -128,6 +128,7 @@ public class MovieScriptServiceTest {
                 instanceOf(MovieScript.class),
                 hasProperty("id", equalTo(entity.getId())),
                 hasProperty("text", equalTo(entity.getText())),
+                hasProperty("analysisJustification", equalTo(entity.getAnalysisJustification())),
                 hasProperty("status", equalTo(entity.getStatus().getDomain())),
                 hasProperty("contact", allOf(
                         instanceOf(ClientContact.class),
