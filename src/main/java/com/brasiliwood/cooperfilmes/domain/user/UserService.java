@@ -14,9 +14,15 @@ public class UserService {
     }
 
     public User loginUser(Login login) {
-        return repository.findByEmail(login.getEmail())
+        User user = findUserByEmail(login.getEmail());
+        if (user.matchPassword(login.getPassword()))
+            return user;
+        throw new UnauthorizedLoginException();
+    }
+
+    public User findUserByEmail(String userEmail) {
+        return repository.findByEmail(userEmail)
                 .map(UserEntity::toDomain)
                 .orElseThrow(UserNotFoundException::new);
     }
-
 }

@@ -4,11 +4,14 @@ import static jakarta.persistence.EnumType.STRING;
 
 import com.brasiliwood.cooperfilmes.domain.movie.script.ClientContact;
 import com.brasiliwood.cooperfilmes.domain.movie.script.MovieScript;
+import com.brasiliwood.cooperfilmes.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.function.Supplier;
 
 @Data
 @NoArgsConstructor
@@ -35,6 +38,8 @@ public class MovieScriptEntity {
     @Enumerated(value = STRING)
     private MovieScriptStatus status;
 
+    private Integer userId;
+
     public static MovieScriptEntity of(MovieScript movieScript) {
         return new MovieScriptEntity(
                 movieScript.getId(),
@@ -42,14 +47,16 @@ public class MovieScriptEntity {
                 movieScript.getContact().getName(),
                 movieScript.getContact().getPhone(),
                 movieScript.getContact().getEmail(),
-                MovieScriptStatus.of(movieScript.getStatus()));
+                MovieScriptStatus.of(movieScript.getStatus()),
+                movieScript.getUserId());
     }
 
-    public MovieScript toDomain() {
+    public MovieScript toDomain(Supplier<User> userSupplier) {
         return MovieScript.of(
                 id,
                 text,
                 status.getDomain(),
+                userSupplier.get(),
                 ClientContact.of(
                         clientName,
                         clientPhone,
@@ -61,14 +68,14 @@ public class MovieScriptEntity {
     @AllArgsConstructor
     public enum MovieScriptStatus {
 
-        AGUARDANDO_ANALISE(MovieScript.MovieScriptStatus.AGUARDANDO_ANALISE),
-        AGUARDANDO_REVISAO(MovieScript.MovieScriptStatus.AGUARDANDO_REVISAO),
-        AGUARDANDO_APROVACAO(MovieScript.MovieScriptStatus.AGUARDANDO_APROVACAO),
-        EM_ANALISE(MovieScript.MovieScriptStatus.EM_ANALISE),
-        EM_REVISAO(MovieScript.MovieScriptStatus.EM_REVISAO),
-        EM_APROVACAO(MovieScript.MovieScriptStatus.EM_APROVACAO),
-        APROVADO(MovieScript.MovieScriptStatus.APROVADO),
-        RECUSADO(MovieScript.MovieScriptStatus.RECUSADO);
+        AGUARDANDO_ANALISE(MovieScript.MovieScriptStatus.WAITING_FOR_ANALYSIS),
+        AGUARDANDO_REVISAO(MovieScript.MovieScriptStatus.WAITING_FOR_REVIEW),
+        AGUARDANDO_APROVACAO(MovieScript.MovieScriptStatus.WAITING_FOR_APPROVAL),
+        EM_ANALISE(MovieScript.MovieScriptStatus.IN_ANALYSIS),
+        EM_REVISAO(MovieScript.MovieScriptStatus.IN_REVIEW),
+        EM_APROVACAO(MovieScript.MovieScriptStatus.IN_APPROVAL),
+        APROVADO(MovieScript.MovieScriptStatus.APPROVED),
+        RECUSADO(MovieScript.MovieScriptStatus.REFUSED);
 
         private final MovieScript.MovieScriptStatus domain;
 

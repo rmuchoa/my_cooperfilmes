@@ -1,5 +1,9 @@
 package com.brasiliwood.cooperfilmes.domain.user;
 
+import com.brasiliwood.cooperfilmes.domain.movie.script.MovieScript;
+import com.brasiliwood.cooperfilmes.domain.movie.script.assign.AnalystUserAssigner;
+import com.brasiliwood.cooperfilmes.domain.movie.script.assign.ApproverUserAssigner;
+import com.brasiliwood.cooperfilmes.domain.movie.script.assign.ReviewerUserAssigner;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +20,30 @@ public class User {
     private String email;
     private String password;
     private UserPosition position;
+
+    public boolean matchPassword(String password) {
+        return this.password.equals(password);
+    }
+
+    public MovieScript assignOnScript(MovieScript script) {
+        return switch (position) {
+            case ANALYST -> buildAnalystAssigner().assignOnScript(script);
+            case REVIEWER -> buildReviewerAssigner().assignOnScript(script);
+            case APPROVER -> buildApproverAssigner().assignOnScript(script);
+        };
+    }
+
+    private AnalystUserAssigner buildAnalystAssigner() {
+        return new AnalystUserAssigner(this);
+    }
+
+    private ReviewerUserAssigner buildReviewerAssigner() {
+        return new ReviewerUserAssigner(this);
+    }
+
+    private ApproverUserAssigner buildApproverAssigner() {
+        return new ApproverUserAssigner(this);
+    }
 
     public static User of(
             String name,

@@ -18,7 +18,7 @@ public class MovieScriptControllerAPI {
 
     @PostMapping
     public MovieScriptResponse submitScript(@RequestBody MovieScriptRequest request) {
-        MovieScript script = service.submitScript(request.toDomain());
+        MovieScript script = service.saveScript(request.toDomain());
         return MovieScriptResponse.of(script);
     }
 

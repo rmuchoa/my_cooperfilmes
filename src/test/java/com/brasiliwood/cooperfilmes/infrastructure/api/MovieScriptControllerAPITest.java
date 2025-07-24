@@ -35,30 +35,30 @@ public class MovieScriptControllerAPITest {
     @Test
     public void shouldAskServiceToSubmitMovieScriptWhenSubmittingScript() {
         MovieScriptRequest request = MovieScriptRequest.builder().contact(ClientContactDTO.builder().build()).build();
-        MovieScript script = MovieScript.builder().status(MovieScript.MovieScriptStatus.EM_ANALISE).contact(ClientContact.builder().build()).build();
-        when(service.submitScript(any())).thenReturn(script);
+        MovieScript script = MovieScript.builder().status(MovieScript.MovieScriptStatus.IN_ANALYSIS).contact(ClientContact.builder().build()).build();
+        when(service.saveScript(any())).thenReturn(script);
 
         controller.submitScript(request);
 
-        verify(service, atLeastOnce()).submitScript(any());
+        verify(service, atLeastOnce()).saveScript(any());
     }
 
     @Test
     public void shouldBuildMovieScriptEntityBasedOnGivenScriptToSaveItWhenSubmittingScript() {
         ClientContactDTO contact = ClientContactDTO.builder().name("name").phone("phone").email("email").build();
         MovieScriptRequest request = MovieScriptRequest.builder().text("some text").contact(contact).build();
-        MovieScript script = MovieScript.builder().id(1).text(request.getText()).status(MovieScript.MovieScriptStatus.EM_ANALISE)
+        MovieScript script = MovieScript.builder().id(1).text(request.getText()).status(MovieScript.MovieScriptStatus.IN_ANALYSIS)
                 .contact(ClientContact.builder().name(contact.getName()).phone(contact.getPhone()).email(contact.getEmail()).build()).build();
-        when(service.submitScript(any())).thenReturn(script);
+        when(service.saveScript(any())).thenReturn(script);
 
         controller.submitScript(request);
 
-        verify(service, atLeastOnce()).submitScript(scriptCaptor.capture());
+        verify(service, atLeastOnce()).saveScript(scriptCaptor.capture());
 
         assertThat(scriptCaptor.getValue(), allOf(
                 instanceOf(MovieScript.class),
                 hasProperty("text", equalTo(request.getText())),
-                hasProperty("status", equalTo(MovieScript.MovieScriptStatus.AGUARDANDO_ANALISE)),
+                hasProperty("status", equalTo(MovieScript.MovieScriptStatus.WAITING_FOR_ANALYSIS)),
                 hasProperty("contact", allOf(
                         instanceOf(ClientContact.class),
                         hasProperty("name", equalTo(contact.getName())),
@@ -72,9 +72,9 @@ public class MovieScriptControllerAPITest {
     public void shouldReturnMovieScriptResponseBasedOnSavedMovieScriptWhenSubmittingScript() {
         ClientContactDTO contact = ClientContactDTO.builder().name("name").phone("phone").email("email").build();
         MovieScriptRequest request = MovieScriptRequest.builder().text("some text").contact(contact).build();
-        MovieScript script = MovieScript.builder().id(1).text(request.getText()).status(MovieScript.MovieScriptStatus.EM_ANALISE)
+        MovieScript script = MovieScript.builder().id(1).text(request.getText()).status(MovieScript.MovieScriptStatus.IN_ANALYSIS)
                 .contact(ClientContact.builder().name(contact.getName()).phone(contact.getPhone()).email(contact.getEmail()).build()).build();
-        when(service.submitScript(any())).thenReturn(script);
+        when(service.saveScript(any())).thenReturn(script);
 
         MovieScriptResponse result = controller.submitScript(request);
 
@@ -94,7 +94,7 @@ public class MovieScriptControllerAPITest {
     @Test
     public void shouldAskServiceToFindScriptByIdWhenFindingScript() {
         Integer scriptId = 1;
-        MovieScript script = MovieScript.builder().id(scriptId).status(MovieScript.MovieScriptStatus.EM_ANALISE)
+        MovieScript script = MovieScript.builder().id(scriptId).status(MovieScript.MovieScriptStatus.IN_ANALYSIS)
                 .contact(ClientContact.builder().build()).build();
         when(service.findScriptById(eq(scriptId))).thenReturn(script);
 
@@ -108,7 +108,7 @@ public class MovieScriptControllerAPITest {
         Integer scriptId = 1;
         ClientContact contact = ClientContact.builder().name("name").phone("phone").email("email").build();
         MovieScript script = MovieScript.builder().id(scriptId).text("some text")
-                .status(MovieScript.MovieScriptStatus.EM_ANALISE)
+                .status(MovieScript.MovieScriptStatus.IN_ANALYSIS)
                 .contact(contact).build();
         when(service.findScriptById(eq(scriptId))).thenReturn(script);
 
