@@ -7,6 +7,10 @@ CREATE TABLE movie_script (
     client_email VARCHAR(100) UNIQUE
 );
 
---INSERT INTO person (name, email) VALUES
---('Alice', 'alice@example.com'),
---('Bob', 'bob@example.com');
+CREATE TABLE approval_user (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100) UNIQUE,
+    password VARCHAR(50),
+    user_position VARCHAR(50)
+)

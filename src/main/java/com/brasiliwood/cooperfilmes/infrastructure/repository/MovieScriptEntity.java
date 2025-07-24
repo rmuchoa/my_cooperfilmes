@@ -10,10 +10,10 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "movie_script")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity(name = "movie_script")
 public class MovieScriptEntity {
 
     @Id
@@ -60,11 +60,12 @@ public class MovieScriptEntity {
     @Getter
     @AllArgsConstructor
     public enum MovieScriptStatus {
+
         AGUARDANDO_ANALISE(MovieScript.MovieScriptStatus.AGUARDANDO_ANALISE),
-        EM_ANALISE(MovieScript.MovieScriptStatus.EM_ANALISE),
         AGUARDANDO_REVISAO(MovieScript.MovieScriptStatus.AGUARDANDO_REVISAO),
-        EM_REVISAO(MovieScript.MovieScriptStatus.EM_REVISAO),
         AGUARDANDO_APROVACAO(MovieScript.MovieScriptStatus.AGUARDANDO_APROVACAO),
+        EM_ANALISE(MovieScript.MovieScriptStatus.EM_ANALISE),
+        EM_REVISAO(MovieScript.MovieScriptStatus.EM_REVISAO),
         EM_APROVACAO(MovieScript.MovieScriptStatus.EM_APROVACAO),
         APROVADO(MovieScript.MovieScriptStatus.APROVADO),
         RECUSADO(MovieScript.MovieScriptStatus.RECUSADO);
